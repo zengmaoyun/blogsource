@@ -107,5 +107,5 @@ npm的start是一个特殊的脚本名称，它的特殊性表现在：
 打包时要使用：`npm run build`
 
 【优点】
-改方法除了快捷之外还有一个优点，因为package.json本来就和node_module相关，所以使用这个命令打包的时候，webpack可以不用全局安装。
+该方法除了快捷之外还有一个优点，因为package.json本来就和node_module相关，所以使用这个命令打包的时候，webpack可以不用全局安装。
 
