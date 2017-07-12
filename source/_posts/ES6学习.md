@@ -79,3 +79,32 @@ foo // error: foo is not defined
 foo是匹配的模式，baz才是变量。真正被赋值的是变量baz，而不是模式foo。
 
 注意，采用这种写法时，变量的声明和赋值是一体的。对于let和const来说，变量不能重新声明，所以一旦赋值的变量以前声明过，就会报错。
+
+6、字符串的扩展
+不太懂的地方：
+``` javascript
+var a = 5;
+var b = 10;
+
+tag`Hello ${ a + b } world ${ a * b }`;
+// 等同于
+tag(['Hello ', ' world ', ''], 15, 50);
+```
+
+7、正则的扩展
+1）
+new RegExp(/abc/ig, 'i').flags —— i，覆盖前面的
+2）
+flags 属性
+ES6 为正则表达式新增了flags属性，会返回正则表达式的修饰符。
+``` javascript 
+// ES5 的 source 属性
+// 返回正则表达式的正文
+/abc/ig.source
+// "abc"
+
+// ES6 的 flags 属性
+// 返回正则表达式的修饰符
+/abc/ig.flags
+// 'gi'
+```
