@@ -6,10 +6,18 @@ tags: [vue,笔记]
 description: 在快速看了一遍vue的语法之后，从git克隆一些项目来学习vue的使用，对期间的学习做下笔记。
 ---
 
-## 项目一
-第一个克隆下来的项目：https://github.com/shinygang/Vue-cnodejs
-是基于vue.js重写Cnodejs.org社区的webapp
-clone下来之后语法，components文件夹里面的组件。
+## vue学习
+
+### vue语法
++ 基础语法，v-bind、v-on等
++ [*学习文档](https://cn.vuejs.org/v2/guide/)
+### vue-router路由
++ 路由
++ [*学习文档](https://router.vuejs.org/zh-cn/)
+### vuex
++ 状态管理模式
+
+## 知识点
 
 ### vue组件的三种编写方式
 #### 1、使用script标签
@@ -121,3 +129,4 @@ export default {
 ### vue单文件组件方式参数
 
 `export default`：是ES6的语法，为模块指定默认输出，在其它模块import的时候可以任意命名。
+
