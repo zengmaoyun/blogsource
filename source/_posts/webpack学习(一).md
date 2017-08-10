@@ -6,6 +6,9 @@ tags: [前端构建工具,webpack]
 description: 什么是webpack，webpack有什么作用，怎么使用webpack
 ---
 
+**webpack官网**
+[webpack官网](https://doc.webpack-china.org/guides/getting-started/)
+
 ## 什么是webpack
 Webpack是一个前端资源加载/打包工具。
 学习参考了简书上的一个教程：[webpack教程](http://www.jianshu.com/p/42e11515c10f)
