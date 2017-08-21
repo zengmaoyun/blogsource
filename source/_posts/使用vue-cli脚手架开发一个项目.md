@@ -65,58 +65,95 @@ npm install --save-dev node-sass
 
 ### 使用promise请求数据（不跨域）
 新建一个js：ajax.js，代码如下：
+**tips:** 
++ 1、跨域使用jsonp方式实现，可以使用CORS，但是需要服务端配合改header
++ 2、当页面有多个请求的时候，callback函数必须是不同的，否则返回数据会出现串了（就是两个接口的数据反了）的现象
++ 3、callback函数必须是window环境下的
 ``` javascript
-export default ({type="GET", url="", data={}, async=true} = {}) => {
-	return new Promise((resolve,reject) => {
-		type = type.toUpperCase();
-		
-		let requestObj = new XMLHttpRequest();
-		
-		/* 兼容IE5、6的代码
-		 * let requestObj;
-		if (window.XMLTttpRequest) {
-			requestObj = new XMLHttpRequest();
-		}else { 
-			//IE5 和 IE6
-			requestObj = new ActiveXObject;
+//定义callback对象，用于保存多个callback函数
+if(typeof window.callbackFunc == "undefined") {
+	window.callbackFunc = {};
+}
+//随机生成callback函数名
+if(typeof window.createBackname == "undefined") {
+	window.createBackname = (len=5) => {
+		let str = "callback";
+		for(let i=0; i<len; i++) {
+			str += Math.floor(Math.random()*10);
 		}
-		*/
-		
-		if (type == "GET") {
-			let dataStr = '';
-			//拼接URL
-			Object.keys(data).forEach(key => {
-				dataStr += key + '=' + data[key] + '&';
-			});
-			dataStr = dataStr.substr(0,dataStr.lastIndexOf('&'));
-			url = url + '?' + dataStr;
-			requestObj.open(type, url, async);
-			requestObj.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-			requestObj.send();
-		}else if(type == 'POST') {
-			requestObj.open(type, url, async);
-			requestObj.setRequestHeader("content-type", "application/x-www-form-urlencoded");
-			requestObj.send(JSON.stringify(data));
+		//去重
+		if(window.callbackFunc[str]) {
+			arguments.callee(len);
 		}else {
-			reject('type error');
+			return str;
 		}
-		//返回状态
-		//onreadystatechange 是一个事件句柄。它的值是一个函数，当 XMLHttpRequest对象的状态发生改变时，会触发此函数
-		//状态从 0 (uninitialized) 到 4 (complete) 进行变化。状态4表示解析完成，我们开始执行代码
-		requestObj.onreadystatechange = () => {
-			if(requestObj.readyState == 4) {  //4表示解析完毕
-				if(requestObj.status == 200) {
-					let obj = requestObj.response;
-					if(typeof obj !== 'object') {
-						obj = JSON.parse(obj);
+	}
+}
+//开始请求
+export default ({type="GET", url="", data={}, async=true, cross=false} = {}) => {
+	return new Promise((resolve,reject) => {
+		//跨域和不跨域走两套
+		if(cross) {
+			//1、随机生成callback函数名，实现callback函数
+			//callback方法必须为window的方法
+			let callbackf = window.createBackname(5);
+			window[callbackf] = (data) => {
+				resolve(data);
+			}
+			let script = document.createElement("script");
+			url += url.indexOf("?") > -1 ? "&callback="+callbackf : "?callback="+callbackf;
+			script.src = url;
+			document.head.appendChild(script);
+			//删除script
+			document.head.removeChild(script);
+		}else {
+			type = type.toUpperCase();
+			let xhr = new XMLHttpRequest();
+			/* 兼容IE5、6的代码
+			 * let requestObj;
+			if (window.XMLTttpRequest) {
+				xhr = new XMLHttpRequest();
+			}else { 
+				//IE5 和 IE6
+				xhr = new ActiveXObject;
+			}
+			*/
+			//必须在open之前调用
+			//返回状态
+			//onreadystatechange 是一个事件句柄。它的值是一个函数，当 XMLHttpRequest对象的状态发生改变时，会触发此函数
+			//状态从 0 (uninitialized) 到 4 (complete) 进行变化。状态4表示解析完成，我们开始执行代码
+			xhr.onreadystatechange = () => {     //或者xhr.onload = () => {if(if((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304) {...})}
+				if(xhr.readyState == 4) {  //4表示解析完毕
+					if((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304) {
+						let resp = xhr.response;
+						if(typeof resp !== 'object') {
+							resp = JSON.parse(resp);
+						}
+						resolve(resp);
+					}else {
+						reject(xhr);
 					}
-					resolve(obj);
-				}else {
-					reject(requestObj);
 				}
 			}
-		}
-	})
+			if (type == "GET") {
+				let dataStr = '';
+				//拼接URL
+				Object.keys(data).forEach(key => {
+					dataStr += key + '=' + data[key] + '&';
+				});
+				dataStr = dataStr.substr(0,dataStr.lastIndexOf('&'));
+				url = url + '?' + dataStr;
+				xhr.open(type, url, async);
+				xhr.send(null); //null必须，对有些浏览器很重要
+			}else if(type == 'POST') {
+				xhr.open(type, url, async);
+				xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+				xhr.send(JSON.stringify(data));
+			}else {
+				reject('type error');
+			}
+		}//不跨域
+	});
 }
 ```
 
@@ -317,7 +354,7 @@ new Vue({
 this.$root.eventBus.$emit("change","北京");
 ```
 
-## 创建全局方法
+## 创建全局公共方法
 在项目开发中，组件之间会有重复的方法，这时候就需要把方法提取出来，作为公共方法。
 ### 实现
 1、创建一个js文件util.js
@@ -346,4 +383,33 @@ Vue.use(util);     //** 必须使用这一步
 
 ```
 
-3、现在，在我们的vue组件里面就可以直接使用change这个方法了，和使用methods里面的方法一样，直接使用
+3、现在，在vue组件里面就可以直接使用change这个方法了，和使用methods里面的方法一样，this.change()
+
+## 单独引用vue模块(vue.js)
+在做项目的时候遇到的一个问题，build打包之后的文件，vendor.js非常大，至少100k以上，每次打包都会有不同，需要完全替换
+如果在上线之后再有需求，改动上线之后，用户每次就要重新加载这一百多k的文件，vendor.js里面包含的内容主要是我们项目中使用到的模块(vue，vuex，vue-router...)，当然这个项目大的模块只用到了vue，但是**vue.min.js也有将近80k**，所以单独拿出来很有必要。
+### 实现
+就两点：
++ 1、在html里面直接引入vue.min.js（下载地址：https://cn.vuejs.org/v2/guide/installation.html）
++ 2、在项目配置文件中配置不打包vue模块，使用externals
+
+``` javascript
+module.exports = {
+    ...
+    output: {
+      ...
+      libraryTarget: "umd"
+    },
+    externals: {
+  	'vue': {
+  	    amd: 'vue',
+            root: 'Vue',  //注意这里是大写，全局变量
+            commonjs: 'vue',
+            commonjs2: 'vue'
+  	}
+    },
+    ...
+  }
+```
+
+在这个配置下再次打包，vender.js文件减少了80k，就是vue.js的大小
