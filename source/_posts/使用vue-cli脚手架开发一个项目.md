@@ -388,6 +388,10 @@ Vue.use(util);     //** 必须使用这一步
 ## 单独引用vue模块(vue.js)
 在做项目的时候遇到的一个问题，build打包之后的文件，vendor.js非常大，至少100k以上，每次打包都会有不同，需要完全替换
 如果在上线之后再有需求，改动上线之后，用户每次就要重新加载这一百多k的文件，vendor.js里面包含的内容主要是我们项目中使用到的模块(vue，vuex，vue-router...)，当然这个项目大的模块只用到了vue，但是**vue.min.js也有将近80k**，所以单独拿出来很有必要。
+
+webpack 中的 externals 配置提供了「不从 bundle 中引用依赖」的方式。[使用介绍](http://www.css88.com/doc/webpack2/configuration/externals/)
+解决的是，所创建的 bundle 依赖于那些存在于用户环境(consumer environment)中的依赖，防止将某些 import 包(package)打包到 bundle 中。
+当前这个情况就可以用webpack 中的 externals实现
 ### 实现
 就两点：
 + 1、在html里面直接引入vue.min.js（下载地址：https://cn.vuejs.org/v2/guide/installation.html）
@@ -412,4 +416,4 @@ module.exports = {
   }
 ```
 
-在这个配置下再次打包，vender.js文件减少了80k，就是vue.js的大小
+在这个配置下再次打包，vendor.js文件减少了80k，就是vue.js的大小
