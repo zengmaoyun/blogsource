@@ -69,8 +69,10 @@ npm install --save-dev node-sass
 + 1、跨域使用jsonp方式实现，可以使用CORS，但是需要服务端配合改header
 + 2、当页面有多个请求的时候，callback函数必须是不同的，否则返回数据会出现串了（就是两个接口的数据反了）的现象
 + 3、callback函数必须是window环境下的
++ 4、创建script-append到head之后，必须在callback函数里面移除script —— 最开始我在append之后马上就remove了，大多手机都没问题，但是在一个三星比较老的手机上，接口访问了结果不执行callback函数，改成在callback里面移除script才正常了
 ``` javascript
 //定义callback对象，用于保存多个callback函数
+/* 之前写的随机生成callback函数，后面看了zepto的jsonp的实现，蠢哭啦，完全可以直接写一个数字递增
 if(typeof window.callbackFunc == "undefined") {
 	window.callbackFunc = {};
 }
@@ -89,23 +91,27 @@ if(typeof window.createBackname == "undefined") {
 		}
 	}
 }
+*/
+window.jsonpID = 0;   //jsonp递增
 //开始请求
 export default ({type="GET", url="", data={}, async=true, cross=false} = {}) => {
 	return new Promise((resolve,reject) => {
 		//跨域和不跨域走两套
 		if(cross) {
-			//1、随机生成callback函数名，实现callback函数
+			//创建callback函数
 			//callback方法必须为window的方法
-			let callbackf = window.createBackname(5);
-			window[callbackf] = (data) => {
+			let callbackName = "jsonp" + (++jsonpID);
+			window[callbackName] = (data) => {
+				//删除script
+				document.head.removeChild(script);
+				//删除方法
+				delete window[callbackName]
 				resolve(data);
 			}
 			let script = document.createElement("script");
-			url += url.indexOf("?") > -1 ? "&callback="+callbackf : "?callback="+callbackf;
+			url += url.indexOf("?") > -1 ? "&callback="+callbackName : "?callback" +callbackName;
 			script.src = url;
 			document.head.appendChild(script);
-			//删除script
-			document.head.removeChild(script);
 		}else {
 			type = type.toUpperCase();
 			let xhr = new XMLHttpRequest();
