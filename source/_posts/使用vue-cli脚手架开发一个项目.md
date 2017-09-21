@@ -131,7 +131,7 @@ export default ({type="GET", url="", data={}, async=true, cross=false} = {}) => 
 			xhr.onreadystatechange = () => {     //或者xhr.onload = () => {if(if((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304) {...})}
 				if(xhr.readyState == 4) {  //4表示解析完毕
 					if((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304) {
-						let resp = xhr.response;
+						let resp = xhr.responseText;
 						if(typeof resp !== 'object') {
 							resp = JSON.parse(resp);
 						}

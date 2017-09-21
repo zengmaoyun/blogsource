@@ -55,3 +55,15 @@ to do...
 ### 2、滚动列表每个li元素高度不固定的情况
 使用el.getBoundingClientRect().top方法，每次事件遍历所有元素，计算距离屏幕上边的高度，如果在0到负el.offsetHeight之间
 那么奇幻字母导航为这个el的字母
+
+### 4、移动端左右滚动
+不要忘记了最简单最流畅的左右滚动就是源生的scroll-x: sroll;
+去掉滚动条的属性：
+```
+::-webkit-scrollbar {
+    display: none; //这条
+    width: 0;
+    background: 0 0;
+}
+```
+
