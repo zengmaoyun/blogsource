@@ -30,9 +30,9 @@ Object.keys({a:1,b:2,c:3})   //[a,b,c]
 源生方法，Object.propertyIsEnumerable
 ``` javascript
 let obj = {toString: null};
-obj.propertyIsEnumerable("toString")  //true
+obj.propertyIsEnumerable("toString")  //true ， 为true是可枚举出来，为false不能枚举出来，有bug
 ```
-**Tips** 在IE6/7/8下，for in 不能枚举出重写的原型上的方法，上面的方法在underscore里面用来检测是否能枚举出重写的原型方法，也就是IE6/7/8浏览器
+**Tips** IE9以下枚举bug：for in 不能枚举出重写的原型上的方法(比如toString)，上面的方法在用来检测是否能枚举出重写的原型方法，也就是IE6/7/8浏览器
 **问题** 我在IE11里面模拟的IE6/7/8，上面的函数都能返回true，也能枚举出来toString，这个很奇怪？？？
 
 + 4、每个函数都是一个Function对象
@@ -63,4 +63,16 @@ typeof Int8Array // function
 ``` javascript
 typeof /s/ === 'function'; // Chrome 1-12 , 不符合 ECMAScript 5.1
 typeof /s/ === 'object'; // Firefox 5+ , 符合 ECMAScript 5.1
+```
+
++ 8、length是数组或者类数组才有的属性，object.length 返回的是undefined
+是否是数组，这里和jquery里面的方法有不同的地方，需要对比看看
+``` javascript
+const MAX_ARRAY_INDEX = Math.pow(2, 53) - 1;
+function isArrayLike(collection) {
+	let length = !!collection && "length" in collection && collection.length;
+	return typeof length === "number" && length > 0 && length < MAX_ARRAY_INDEX
+	//或者
+	return Object.prototype.toString.call(collection) == "[object Array]";
+}
 ```
