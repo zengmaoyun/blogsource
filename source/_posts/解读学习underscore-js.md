@@ -76,3 +76,7 @@ function isArrayLike(collection) {
 	return Object.prototype.toString.call(collection) == "[object Array]";
 }
 ```
+
++ 9、call和apply
+call 比 apply 快很多
+.apply 在运行前要对作为参数的数组进行一系列检验和深拷贝，.call 则没有这些步骤

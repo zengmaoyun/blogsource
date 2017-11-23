@@ -109,7 +109,7 @@ export default ({type="GET", url="", data={}, async=true, cross=false} = {}) => 
 				resolve(data);
 			}
 			let script = document.createElement("script");
-			url += url.indexOf("?") > -1 ? "&callback="+callbackName : "?callback" +callbackName;
+			url += url.indexOf("?") > -1 ? "&callback="+callbackName : "?callback=" +callbackName;
 			script.src = url;
 			document.head.appendChild(script);
 		}else {
@@ -423,3 +423,14 @@ module.exports = {
 ```
 
 在这个配置下再次打包，vendor.js文件减少了80k，就是vue.js的大小
+
+## 一些知识点
+
++ 1、$mount(el)
+el是Vue实例，假如需要延迟挂载，可以在之后手动调用vm.$mount()方法来挂载
+``` javascript
+new Vue({
+	router,
+	store
+}).$mount("#app");
+```
