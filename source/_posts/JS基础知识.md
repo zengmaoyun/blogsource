@@ -187,3 +187,125 @@ func.bind(obj/this)
 箭头函数的上下文已经确定（外层执行上下文），不能通过call,apply和bind改变
 **TIPS**
 箭头函数的this是在`函数调用`过程中设置的；
+
+
+## 闭包（Closures）
+
+一个闭包是一个可以自己拥有独立的环境与变量的的表达式（通常是函数）。
+
+### 函数指向并调用自身
++ 1、直接调函数名
++ 2、[arguments.callee](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/arguments/callee)
++ 3、作用域下的一个指向该函数的变量名
+``` javascript
+var foo = function bar() {
+   // statements go here
+};
+bar()
+arguments.callee
+foo()
+```
+
+### arguments对象
+函数参数属性，有length值
+
+### 函数参数
+
+ES6
+
++ 1、默认参数
+
+函数的参数的默认值是undefined，可以自己设定避免内部再判断
+``` javascript
+function multiply(a, b = 1) {
+  return a*b;
+}
+```
+
++ 2、剩余参数（...arg）
+剩余参数可以在函数参数的任意位置处，前面可以有多个确定参数
+如：
+``` javascript
+function multiply(...theArgs) {
+  return theArgs.map(x => 2 * x);
+}
+```
+
+#### encodeURI和encodeURIComponent区别
+encodeURI(String)主要用于整个URI(例如，url)
+而encodeURIComponent(String)主要用于对URI中的某一段(例如前面URI中的value．htm)进行编码。
+**主要区别：** 
+encodeURI()不会对本身属于URI的特殊字符进行编码，例如冒号、正斜杠、问号和井字号；而encodeURIComponent()则会对它发现的任何非标准字符进行编。
+
+### for-in 和 for-of(ES6)的区别
+for...in： 循环遍历的结果是数组元素的下标不同的值，包括对象
+for...of 遍历的结果是元素的值
+
+
+## Map对象（ES6）
+一个Map对象就是一个简单的键值对映射集合，可以按照数据插入时的顺序遍历所有的元素
+``` javascript
+var sayings = new Map();
+sayings.set('dog', 'woof');
+sayings.set('cat', 'meow');
+sayings.set('elephant', 'toot');
+sayings.size; // 3
+sayings.get('fox'); // undefined
+sayings.has('dog'); // true
+sayings.has('bird'); // false
+sayings.delete('dog');
+sayings.has('dog'); // false
+
+for (var [key, value] of sayings) {
+  console.log(key + ' goes ' + value);
+}
+// "cat goes meow"
+// "elephant goes toot"
+
+sayings.clear();
+sayings.size; // 0
+```
+
+### delete
+用var定义的全局变量不能用delete删除
+``` javascript
+var a = 1;
+delete a; // false
+b = 2;
+delete b; //true，b已经被删除了
+```
+
+## 原型链
+
+获取原型对象：
+非标准：obj._prop_
+ES6：
++ Object.getPrototypeOf(obj)
++ Object.setPrototypeOf(obj)
+
+### Object.create()（ES5）
+可以调用这个方法来创建一个新对象。新对象的原型就是调用 create 方法时传入的第一个参数。
+``` javascript
+Object.create(obj);
+
+### obj.hasOwnProperty
+
+``` javascript
+var a = {"s":1}
+a.hasOwnProperty("d")  //false
+a.hasOwnProperty("ds") //true
+
+var d = Object.create(null);
+// d ---> null
+console.log(d.hasOwnProperty);  //undefined
+```
+
+``` javascript
+function Foo(){}
+//执行
+var o = new Foo();
+相当于执行
+var o = new Object();
+o._proto_ = Foo.prototype;
+Foo.call(o);
+```
