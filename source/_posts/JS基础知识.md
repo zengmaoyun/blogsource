@@ -1,14 +1,14 @@
 ---
 layout: _posts
-title: JS基础知识
+title: 【base】JS基础知识
 date: 2017-11-13 20:34:36
-tags: [JS]
+tags: [JS,基础]
 description: js：变量，类型，类型转换，作用域，this、闭包，es6、原型链等基础知识
 ---
 
 [变量](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Grammar_and_types)
 ## 变量（variable）
-作用域区分：全局变量，局部变量（let申明的语句块作用域）
+作用域区分：全局变量，局部变量（let声明的语句块作用域）
 
 ### base
 变量的名字又叫做标识符，其需要遵守一定的规则。
@@ -47,7 +47,7 @@ var boo = function() {}   //函数表达式，只会提升boo
 ```
 
 
-### 申明变量
+### 声明变量
 声明变量是它所在上下文环境的不可配置属性，非声明变量是可配置的（如非声明变量可以被删除）
 ``` javascript
 var a = 1;
