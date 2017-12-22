@@ -23,3 +23,36 @@ git checkout head.js
 ```
 git reset --hard head 
 ```
+
+## 分支
+### 查看分支
+```
+git branch -a
+```
+
+### 创建分支
+```
+git branch maoamo
+```
+
+### 切换分支
+```
+git checkout maomao
+```
+
+创建本地分支maomao 并切换到maomao分支
+```
+git checkout -b maomao
+```
+
+### 推送本地分支到远程分支
+```
+git push origin local_branch:remote_branch
+一般写：
+git push origin local_branch:local_branch   //远程创建分支local_branch
+```
+
+### 删除本地分支
+```
+git branch -d <branch名>
+```

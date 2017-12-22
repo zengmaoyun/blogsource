@@ -67,3 +67,38 @@ to do...
 }
 ```
 
+
+### 5、设置页面不缓存
+``` html
+<meta http-equiv="Expires" content="0">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Cache-control" content="no-cache">
+<meta http-equiv="Cache" content="no-cache">
+```
+
+### 6、标签
+别人问我的一个问题，下面代码click为什么不生效
+``` html
+<!DOCTYPE html>
+<html>
+	<head></head>
+	<body>
+	
+		<td onclick="alert(1)">复制文本</td>
+	
+	</body>
+</html>
+```
+
+**原因：** td只能在table下面有意义，不在table下时，直接解析成了文字，也就没有事件了，将td改成span，onclick生效，或者
+``` html
+<!DOCTYPE html>
+<html>
+	<head></head>
+	<body>
+		<table>
+			<td onclick="alert(1)">复制文本</td>
+		<table>
+	</body>
+</html>
+```

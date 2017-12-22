@@ -51,3 +51,28 @@ input {
 	outline: none;
 }
 ```
+
+
+### 5、选择非第一个的p元素
+``` css
+ p:not(:first-child) {
+    margin-top: pxToRem(20px);
+}
+```
+
+### 6、隐藏滚动条
+``` css
+.scroll {
+	height: 500px;
+	overflow: auto;
+}
+
+::-webkit-scrollbar {/*隐藏滚轮*/
+	display: none;
+}
+```
+
+### 7、移动端流畅滚动
+开发移动端页面设计滚动的时候一定加上
+-webkit-overflow-scrolling: touch;
+否则IOS的滚动会很卡

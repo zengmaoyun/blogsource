@@ -129,3 +129,25 @@ document.addEventListener("DOMContentLoaded", function(event) {
   console.log("DOM fully loaded and parsed");
 });
 ```
+
+
+### 5、各种距离计算（scroll中）
+```
+//页面滚动距离：
+window.pageYOffset|| document.documentElement.scrollTop || document.body.scrollTop;
+//元素距离页面顶部距离
+ele.offsetTop
+//元素高度
+ele.offsetHeight
+//元素宽度
+ele.offsetWidth
+```
+
+### DOM节点
+获取孩子节点
+```
+//children获取不包括空格节点的元素节点
+ele.children
+//childNodes获取包括空文本节点的节点数组
+ele.childNodes
+```
