@@ -76,3 +76,20 @@ input {
 开发移动端页面设计滚动的时候一定加上
 -webkit-overflow-scrolling: touch;
 否则IOS的滚动会很卡
+
+### 8、p元素里面一串标点符号不换行的情况
+**描述：** 在一个车源详情页的时候，发现p元素里面的文字描述，结尾是一串感叹号的时候，没换行，直接出来边框
+**解决：** 给这个p元素加上样式：
+``` css
+word-break: break-word;
+```
+
+### 9、加蒙层之后，底部body不滚动
+底部设置
+```
+document.body.style.overflow = "hidden";
+document.body.style.position = "fixed";
+    	
+document.body.style.overflow = "auto";
+document.body.style.position = "static";
+```

@@ -102,3 +102,26 @@ to do...
 	</body>
 </html>
 ```
+
+### 7、IOS里面怎么禁止video全屏
+可以`iOS APP`中使用网页视频禁止全屏
+1、在video中加入属性webkit-playsinline
+``` html
+<video id="player" width="480" height="320" webkit-playsinline>
+```
+2、Obj-C中，添加配置：
+```
+webview.allowsInlineMediaPlayback = YES;
+```
+
+### 8、设置一个position:fixed的元素一开始隐藏，滚动的时候展示，第一次展示的时候位置跳动了
+原因：隐藏的fixed元素再次展示，DOM树刷新，计算过程中位置top闪现的问题。
+解决：不让fixed的元素隐藏，在它内部再包裹一个div，让这个div隐藏和展示
+``` html
+<div class="goTab" id="goTab">	//fixed
+	<div class="cont">			//absolute ,display:none
+		<span>回到顶部</span>
+		<i></i>
+	</div>
+</div>
+```

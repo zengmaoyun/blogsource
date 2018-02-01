@@ -151,3 +151,79 @@ ele.children
 //childNodes获取包括空文本节点的节点数组
 ele.childNodes
 ```
+
+### 判断数组
+因为typeof 数组，得到的结果是object，所以判断数据得是其他方法
+
+``` javascript
+var a = [1,2,3];
+```
+1、instanceof
+instanceof运算符用来判断一个构造函数的prototype属性所指向的对象是否存在另外一个要检测对象的原型链上
+``` javascript
+a instanceof Array // true
+```
+
+2、constructor
+constructor 属性返回对创建此对象的数组函数的引用。
+``` javascript
+a.constructor // function Array() { [native code] }
+```
+
+3、toString.call
+``` javascript
+Object.prototype.toString.call(a)	// [object Array]
+```
+4、IE8以上
+IE8以上Array新引入了一个方法isArray()，判断是否是数组
+```
+Array.isArray(a) //true
+```
+
+## 6、函数去抖动、分流
+``` javascript
+function throtte(method, delay, duration) {
+		var timer = null,
+			start = Date.now();
+		return function(){
+			var context = this,
+				now = Date.now();
+			clearTimeout(timer);
+			if(now-start >= duration) {
+				method.call(context);
+				start = Date.now();
+			}else {
+				timer = setTimeout(function(){
+					method.call(context);
+					clearTimeout(timer);
+				},delay);
+			}
+		}
+	}
+	var windowH = $(window).height();
+	function ShowLog(ele, name, log) {
+		this.ele = ele;
+		this.eleH = ele.height();
+		this.offsetT = ele.offset().top;
+		this.name = name;
+		this.log = log;
+	}
+	
+	ShowLog.prototype.setScroll = function() {
+		var context = this,
+			throtteb =  throtte(context.sendLog, 200, 1000);
+		$(window).on("scroll."+context.name, function(){
+			throtteb.call(context);
+		});
+	}
+	ShowLog.prototype.sendLog = function() {
+		var offsetH = this.ele.offset().top,
+			scrollTop = $(window).scrollTop();
+		if(scrollTop + windowH > this.offsetT + this.eleH/3 ) {
+			//发送埋点
+			console.log(this.log);
+			$(window).off("scroll."+this.name);
+		}
+	}
+	new ShowLog($("div"),"name","log").setScroll();
+```
